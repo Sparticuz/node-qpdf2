@@ -14,4 +14,4 @@ export const hyphenate = (variable: string): string =>
  * @param file the path of the file to be tested.
  */
 // eslint-disable-next-line security/detect-non-literal-fs-filename
-export const fileExists = (file: string): boolean => !!existsSync(file);
+export const fileExists = (file: string): boolean => existsSync(file);

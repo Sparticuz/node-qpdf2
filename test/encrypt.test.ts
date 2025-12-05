@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-hardcoded-passwords */
 import { copyFile } from "node:fs/promises";
 import { expect, test } from "vitest";
 
@@ -91,7 +92,6 @@ test("should throw if only user or owner password is submitted", async () => {
   await expect(
     encrypt({
       input,
-      // @ts-expect-error This is what I'm testing
       password: { user: "test" },
     }),
   ).rejects.toThrow("Please specify both owner and user passwords");

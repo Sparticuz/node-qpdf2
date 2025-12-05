@@ -15,17 +15,17 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x, 22.x, latest]
+        node-version: [20.x, 22.x, 24.x, latest]
 
     steps:
       - name: Install QPDF
         run: |
           sudo apt-get install wget unzip -y
-          wget -O /tmp/qpdf.zip https://github.com/qpdf/qpdf/releases/download/v11.9.1/qpdf-11.9.1-bin-linux-x86_64.zip
+          wget -O /tmp/qpdf.zip https://github.com/qpdf/qpdf/releases/download/v12.2.0/qpdf-12.2.0-bin-linux-x86_64.zip
           sudo unzip -d / /tmp/qpdf.zip
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci

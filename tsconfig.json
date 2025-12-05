@@ -1,18 +1,26 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Base Default TSConfig",
-  "extends": ["@tsconfig/node18/tsconfig", "@tsconfig/strictest/tsconfig"],
+  "extends": ["@tsconfig/node22/tsconfig", "@tsconfig/strictest/tsconfig"],
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "exactOptionalPropertyTypes": false,
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
-    "noUnusedLocals": false,
-    "outDir": "dist",
     "resolveJsonModule": true,
     "sourceMap": true,
-    "verbatimModuleSyntax": true
+
+    /* Strictness */
+    "exactOptionalPropertyTypes": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUnusedLocals": false,
+    "verbatimModuleSyntax": true,
+
+    /* JS Interop */
+    "erasableSyntaxOnly": true,
+
+    "target": "ES2022",
+    "moduleDetection": "force",
+
+    "outDir": "dist"
   },
   "include": ["src", "test", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]
