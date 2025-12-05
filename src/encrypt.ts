@@ -130,6 +130,7 @@ export const encrypt = async (userPayload: EncryptOptions): Promise<Buffer> => {
       // cleartextMetadata does not have a value
       if (restriction === "cleartextMetadata" && value === true) {
         callArguments.push(`--${hyphenate(restriction)}`);
+        continue;
       }
 
       if (restriction === "useAes" && payload.keyLength === 256) {
