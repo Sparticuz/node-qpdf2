@@ -1,12 +1,11 @@
 import execute from "./spawn.js";
-import { fileExists, hyphenate } from "./utils.js";
+import { fileExists, hyphenate } from "./utilities.js";
 
 const EncryptDefaults = {
   keyLength: 256,
   overwrite: true,
 };
-type BaseYesNoOptions = "n" | "y";
-type BasePrintOptions = "full" | "low" | "none";
+export type EncryptOptions = Encrypt40bitOptions | EncryptDefaultOptions;
 interface BaseEncryptOptions {
   /** The location of the unencrypted pdf file */
   input: string;
@@ -16,19 +15,20 @@ interface BaseEncryptOptions {
    * If defined, will determine if the encrypted pdf will overwrite an existing file
    * @default true
    */
-  overwrite?: boolean | undefined;
+  overwrite?: boolean;
   /**
    * A string containing the password with will be used to decrypt the pdf.
    * Optionally, an object containing `user` and `owner` for setting different roles.
    * If undefined, will encrypt a pdf without requiring a password to decrypt
    */
   password?:
+    | string
     | {
-        owner: string;
-        user: string;
-      }
-    | string;
+        owner?: string;
+        user?: string;
+      };
 }
+type BasePrintOptions = "full" | "low" | "none";
 interface BaseRestrictionsOptions {
   /** Please see: https://qpdf.readthedocs.io/en/stable/cli.html#option-accessibility */
   accessibility?: BaseYesNoOptions;
@@ -49,6 +49,7 @@ interface BaseRestrictionsOptions {
   /** Please see: https://qpdf.readthedocs.io/en/stable/cli.html#option-use-aes */
   useAes?: BaseYesNoOptions;
 }
+type BaseYesNoOptions = "n" | "y";
 interface Encrypt40bitOptions extends BaseEncryptOptions {
   /**
    * A number which defines the encryption algorithm to be used.
@@ -57,10 +58,10 @@ interface Encrypt40bitOptions extends BaseEncryptOptions {
    */
   keyLength?: 40;
   /** Restrictions for the encrypted pdf */
-  restrictions?: {
+  restrictions?: BaseRestrictionsOptions & {
     /** Please see: https://qpdf.readthedocs.io/en/stable/cli.html#option-print */
     print?: BasePrintOptions | BaseYesNoOptions;
-  } & BaseRestrictionsOptions;
+  };
 }
 interface EncryptDefaultOptions extends BaseEncryptOptions {
   /**
@@ -70,18 +71,18 @@ interface EncryptDefaultOptions extends BaseEncryptOptions {
    */
   keyLength?: 128 | 256;
   /** Restrictions for the encrypted pdf */
-  restrictions?: {
+  restrictions?: BaseRestrictionsOptions & {
     /** Please see: https://qpdf.readthedocs.io/en/stable/cli.html#option-print */
     print?: BasePrintOptions;
-  } & BaseRestrictionsOptions;
+  };
 }
-export type EncryptOptions = Encrypt40bitOptions | EncryptDefaultOptions;
 
 /**
  * Encrypts a PDF file
  * @param userPayload The options for encryption
  * @returns The output of QPDF
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const encrypt = async (userPayload: EncryptOptions): Promise<Buffer> => {
   // Set Defaults
   const payload = { ...EncryptDefaults, ...userPayload };
@@ -103,9 +104,7 @@ export const encrypt = async (userPayload: EncryptOptions): Promise<Buffer> => {
   // Set user-password and owner-password
   if (typeof payload.password === "object") {
     if (
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       payload.password.user === undefined ||
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       payload.password.owner === undefined
     ) {
       // TODO: If the keyLength is 256 AND there is no owner password, `--allow-insecure` can be used

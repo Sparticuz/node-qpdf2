@@ -6,6 +6,7 @@ import { spawn } from "node:child_process";
 // eslint-disable-next-line unicorn/no-anonymous-default-export
 export default (callArguments: string[]): Promise<Buffer> =>
   new Promise((resolve, reject) => {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
     const process = spawn("qpdf", callArguments);
     const stdout: string[] = [];
     const stderr: string[] = [];

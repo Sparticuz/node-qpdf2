@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-hardcoded-passwords */
 import { expect, test } from "vitest";
 
 import { info } from "../src/info.js";
